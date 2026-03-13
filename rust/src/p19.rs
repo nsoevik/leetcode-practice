@@ -1,46 +1,37 @@
 #[derive(PartialEq, Eq, Clone, Debug)]
 pub struct ListNode {
-  pub val: i32,
-  pub next: Option<Box<ListNode>>
+    pub val: i32,
+    pub next: Option<Box<ListNode>>,
 }
 
 impl ListNode {
-  fn new(val: i32) -> Self {
-    ListNode {
-      next: None,
-      val
+    #[inline]
+    fn new(val: i32) -> Self {
+        ListNode { next: None, val }
     }
-  }
 }
-
-pub fn remove_nth_from_end(head: Option<Box<ListNode>>, n: i32) -> Option<Box<ListNode>> {
-    let mut length = 0;
-    let mut tmp = &head;
-    while let Some(next_tmp) = tmp {
-        length+=1;
-        tmp = &next_tmp.next;
-    }
-    
-
-    let n = length - n;
-    let mut dummy_head = Option::Some(Box::new(ListNode {
-        val: 0,
-        next: head,
-    }));
-
-    let mut tmp = &mut dummy_head;
-    for _ in 0..n {
-        match tmp {
-            Some(node) => tmp = &mut node.next,
-            None => break,
+impl Solution {
+    pub fn remove_nth_from_end(head: Option<Box<ListNode>>, n: i32) -> Option<Box<ListNode>> {
+        let mut length = 0;
+        let mut tmp = &head;
+        while let Some(n) = tmp {
+            length += 1;
+            tmp = &n.next;
         }
-    }
 
-    if let Some(curr) = tmp {
-      if let Some(to_delete) = curr.next.take() {
-          curr.next = to_delete.next;
-      }
+        let mut new_node = ListNode::new(0);
+        new_node.next = head;
+        let mut dummy = Some(Box::new(new_node));
+        let mut tmp = &mut dummy;
+        for i in 0..(length - n) {
+            tmp = &mut tmp.as_mut().unwrap().next;
+        }
+        let to_delete = tmp.as_mut().unwrap().next.take();
+        if let Some(node) = to_delete {
+            tmp.as_mut().unwrap().next = node.next;
+        }
+        dummy.unwrap().next
     }
-
-    return dummy_head.unwrap().next;
 }
+
+struct Solution;
