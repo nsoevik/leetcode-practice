@@ -6,7 +6,7 @@ impl Solution {
         for ele in p.chars() {
             *base_map.entry(ele).or_insert(0) += 1;
         }
-        
+
         let s_chars: Vec<char> = s.chars().collect();
         let mut low = 0;
         let mut high = 0;
@@ -18,13 +18,14 @@ impl Solution {
                 low = high + 1;
                 high = low;
                 total_count = p.len();
+                curr_map = base_map.clone();
                 continue;
-            }
+            };
 
             if *rem_count == 0 {
-                low = high + 1;
-                high = low;
-                total_count = p.len();
+                *curr_map.get_mut(&s_chars[low]).unwrap() += 1;
+                low += 1;
+                total_count += 1;
                 continue;
             }
 
@@ -32,11 +33,13 @@ impl Solution {
             *rem_count -= 1;
 
             if total_count == 0 {
-                ans.push(low as i32); 
+                ans.push(low as i32);
                 *curr_map.get_mut(&s_chars[low]).unwrap() += 1;
                 total_count += 1;
                 low += 1;
             }
+
+            high += 1;
         }
 
         ans
